@@ -191,6 +191,11 @@ public:
         if(del->left == tnil){
             Structptr temp_right = del->right;
             transplantSub(del,temp_right)
+        } else if(del->right == tnil){
+            Structptr temp_left = del->left;
+            transplantSub(del,temp_left);
+        }else{
+            
         }
 
     }
