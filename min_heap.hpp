@@ -1,12 +1,7 @@
-#include<iostream>
-#include<vector>
 
-using namespace std;
-
-//data-structure for min-heap
-class Execution_time{
+class MinHeap{
 	private:
-		vector<int> work_days;	//
+		std::vector<Structptr> work_days;	//
 
 		int parent(int i ){
 			return (i-1)/2;
@@ -22,8 +17,8 @@ class Execution_time{
 
 		//making the array a min heap whenever a new element is inserted
 		void heapify(int i){
-			if(i && work_days[i]<work_days[parent(i)]){
-				swap(work_days[i],work_days[parent(i)]);
+			if(i && work_days[i]->executionTime<work_days[parent(i)]->executionTime){
+				std::swap(work_days[i]->executionTime,work_days[parent(i)]->executionTime);
 				heapify(parent(i));
 			}
 		}
@@ -40,31 +35,39 @@ class Execution_time{
 				min  = r;
 			}
 			if(i != min){
-				swap(work_days[i],work_days[min]);
+				std::swap(work_days[i],work_days[min]);
 				heapify_down(min);
 			}
-			//cout<<"inside down";
+			//std::cout<<"inside down";
 			//print();
 			
 		}
 	
 	public:
+	
+		MinHeap(){
+			work_days = {};
+		}
+		
+
 		int size(){
 			return work_days.size();
 		}
 
-		void insert(int val){
-			work_days.push_back(val);
+		//inserting the new node referenced to redblack tree
+	
+		void insertIntoMinHeap(Structptr newNode){
+			work_days.push_back(newNode);
 			heapify(size() - 1);
 		}
 		//function to increment days as construction work proceeds
 		void increment_time(int val){
-			work_days[0] += val;
+			work_days[0]->executionTime += val;
 			heapify_down(0); 
 		}
 
-		int root(){
-			return work_days[0];
+		int rootMinheap(){
+			return work_days[0]->executionTime;
 		}
 
 		void delete_root(){
@@ -73,27 +76,11 @@ class Execution_time{
 			heapify_down(0);
 		}
 
-		void print(){
-			for (int i = 0;i<work_days.size();++i){
-				cout<<work_days.at(i)<<" ";
+		void printMinHeap(){
+			for (int i = 0; i< (int)work_days.size(); ++i){
+				std::cout<<work_days.at(i)->executionTime<<" ";
 			}
 		}
 };
 
-int main(){
-	Execution_time et;
-	et.insert(1);
-	et.insert(10);
-	et.insert(15);
-	et.insert(14);
-	et.insert(11);
-	et.print();
-	et.delete_root();
-	//et.increment_time(10);
-	
-	
-	cout<<"\n after delete \n";
-	et.print();
 
-	return 0;
-}

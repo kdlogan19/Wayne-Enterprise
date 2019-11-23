@@ -1,17 +1,16 @@
 #include <iostream>
-
-using namespace std;
-
-// building_num structure that represents a node in the tree
+// node structure
 struct Node {
-	int building_num; // holds the key
+	int building_num; // building_num
+    int executionTime;
+    int totalTime;
 	Node *parent; // pointer to the parent
 	Node *left; // pointer to left child
 	Node *right; // pointer to right child
 	int color; // 1 -> Red, 0 -> Black
 };
 
-typedef Node *Structptr;
+typedef Node* Structptr;
 
 // class RedBlackTree implements the operations in Red Black Tree
 class RedBlackTree {
@@ -19,29 +18,34 @@ private:
 	Structptr root;
 	Structptr tnil;
 public:
+    //constructor of Red-Black Tree`
     RedBlackTree() {
 		tnil = new Node;
-		tnil->color = 0;
-		tnil->left = nullptr;
-		tnil->right = nullptr;
+		tnil->color = 0; //initializing all external nodes as black nodes
+		tnil->left = tnil;
+		tnil->right = tnil;
 		root = tnil;
 	}
 
-    Structptr initializeNode(int key){
+    //initialization of struct node
+    Structptr initializeNode(int num,int time){
         Structptr newNode = new Node;
-        newNode->parent = nullptr;
-		newNode->building_num = key;
+        newNode->parent = tnil;
+		newNode->building_num = num;
+        newNode->totalTime = time;
+        newNode->executionTime = 0;
 		newNode->color = 1; // new node must be red
         newNode->left = tnil;
 		newNode->right = tnil;
         return newNode;
     }
 
-    void insert(int key) {
+    //Inserting a new node whenever a new building construction begins
+    void insert(Structptr node) {
 		// Ordinary Binary Search Insertion
-		Structptr node = initializeNode(key);
-        Structptr x = this->root;
-        Structptr y = nullptr;            
+		//Structptr node = initializeNode(buildingNum,totalTime);
+        Structptr x = root;
+        Structptr y = tnil;            
 		while (x != tnil) {
 			y = x;
 			if (node->building_num < x->building_num) {
@@ -49,12 +53,11 @@ public:
 			} else {
 				x = x->right;
 			}
-            //cout<<"\n \n **parent of new node"<<y->building_num<<"  "<<node->building_num;
 		}
 
 		// y is parent of x
 		node->parent = y;
-		if (y == nullptr) {
+		if (y == tnil) {
 			root = node;
 		} else if (node->building_num < y->building_num) {
 			y->left = node;
@@ -62,13 +65,13 @@ public:
 			y->right = node;
 		}
 		// if new node is a root node, simply return
-		if (node->parent == nullptr){
+		if (node->parent == tnil){
 			node->color = 0;
 			return;
 		}
 
 		// if the grandparent is null, simply return
-		if (node->parent->parent == nullptr) {
+		if (node->parent->parent == tnil) {
 			return;
 		}
         // Fix the tree
@@ -90,16 +93,16 @@ public:
                 uncle = node->parent->parent->right; // uncle
 
                 if (uncle->color == 1) {
-                    // mirror case 3.1
+                    // When uncle is red
                     flipColors(node,uncle);
                     node = node->parent->parent;	
                 } else {
                     if (node == node->parent->right) {
-                        // mirror case 3.2.2
+                        //When node is right child, first we perform left rotation
                         node = node->parent;
                         leftRotation(node);
                     }
-                    // mirror case 3.2.1
+                    //we perform right rotation
                     node->parent->color = 0;
                     node->parent->parent->color = 1;
                     rightRotation(node->parent->parent);
@@ -107,18 +110,18 @@ public:
             }
             //When new node is in the right subtree of grandparant  
             else {
-                uncle = node->parent->parent->left; // uncle
+                uncle = node->parent->parent->left; // uncle being left subtree of gp
                 if (uncle->color == 1) {
-                    // case 3.1
+                    // When uncle is red
                     flipColors(node,uncle);
                     node = node->parent->parent;
                 } else {
                     if (node == node->parent->left) {
-                        // case 3.2.2
+                        // When node is left child or right tree(RL)
                         node = node->parent;
                         rightRotation(node);
                     }
-                    // case 3.2.1
+                    // We perform a left rotation
                     node->parent->color = 0;
                     node->parent->parent->color = 1;
                     leftRotation(node->parent->parent);
@@ -140,7 +143,7 @@ public:
             temp->right->parent = node;
         }
         temp->parent = node->parent;
-        if(node->parent == nullptr){
+        if(node->parent == tnil){
             this->root = temp;
         } else if(node == node->parent->right){
             node->parent->right = temp;
@@ -159,7 +162,7 @@ public:
            temp->left->parent = gp; 
         }
         temp->parent = gp->parent;
-        if(gp->parent == nullptr){
+        if(gp->parent == tnil){
             this->root = temp;
         }else if (gp == gp->parent->left){
             gp->parent->left = temp;
@@ -172,14 +175,16 @@ public:
     }
 
     void transplantSub(Structptr x, Structptr y){
-        if(x->parent == nullptr){
+        if(x->parent == tnil){
             root = y;
         }else if(x == x->parent->left){
             x->parent->left = y;
         }else{
             x->parent->right = y;
         }
-        y->parent = x->parent;
+        if(y != tnil){
+            y->parent = x->parent;
+        }
     }
 
     Structptr findBuilding(Structptr node, int key){
@@ -195,7 +200,7 @@ public:
     }
 
     Structptr treeMinimum(Structptr node){
-        while(node->left != nullptr){
+        while(node->left != tnil){
             node = node->left;
         }
         return node;
@@ -204,7 +209,7 @@ public:
     void deleteNode(int key){
         Structptr del = findBuilding(root, key);
         if(del == tnil){
-            cout<<"building not in the complex";
+            std::cout<<"building not in the complex";
             return;
         }
         Structptr y = del;
@@ -212,10 +217,10 @@ public:
         int del_color = y->color;
         if(del->left == tnil){
             temp = del->right;
-            transplantSub(del,temp);
+            transplantSub(del,del->right);
         } else if (del->right == tnil){
             temp = del->left;
-            transplantSub(del,temp);
+            transplantSub(del,del->left);
         } else {
             y = treeMinimum(del->right);
             del_color = y->color;
@@ -236,7 +241,7 @@ public:
         if(del_color == 0){
             fixDeletion(temp);
         }
-
+        
     }
 
     void fixDeletion(Structptr node){
@@ -307,12 +312,11 @@ public:
             if(node == tnil){
                 return;
             }
-        
                 printInorder(node->left);
                 if(node != this->root){
-                    cout<<node->building_num<<"; ";
-                    cout<<node->parent->building_num<<";";
-                    cout<<node->color<<"; \n";
+                    std::cout<<node->building_num<<"; ";
+                    std::cout<<node->parent->building_num<<";";
+                    std::cout<<node->color<<"; \n";
                 }
                 printInorder(node->right);
                 return;
@@ -320,16 +324,4 @@ public:
 
 };
 
-int main() {
 
-	RedBlackTree bst;
-    int x;
-    for (int i = 0; i<5;++i){
-        cin>>x;
-        bst.insert(x);
-    }
-
-    cout<<bst.getRoot()->building_num<<"\n";
-    bst.printInorder(bst.getRoot());
-	return 0;
-}
