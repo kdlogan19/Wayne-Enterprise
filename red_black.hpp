@@ -15,9 +15,10 @@ typedef Node* Structptr;
 // class RedBlackTree implements the operations in Red Black Tree
 class RedBlackTree {
 private:
-	Structptr root;
-	Structptr tnil;
+    Structptr root;
+    Structptr tnil;
 public:
+
     //constructor of Red-Black Tree`
     RedBlackTree() {
 		tnil = new Node;
@@ -305,21 +306,25 @@ public:
         node->color = 0;
     }
 
+    Structptr getTNIL(){
+        return tnil;
+    }
+
     Structptr getRoot(){
         return this->root;
     }
-    void printInorder(Structptr node) {
+
+    void printInorder(Structptr node,int val1,int val2){
+           
             if(node == tnil){
                 return;
             }
-                printInorder(node->left);
-                if(node != this->root){
-                    std::cout<<node->building_num<<"; ";
-                    std::cout<<node->parent->building_num<<";";
-                    std::cout<<node->color<<"; \n";
-                }
-                printInorder(node->right);
-                return;
+            printInorder(node->left, val1,val2);
+            if(val1 <= node->building_num<=val2){
+                 std::cout<<"("<<node->building_num<<","<<node->executionTime<<","<<node->totalTime<<")";
+            }
+            printInorder(node->right,val1,val2);
+            return;
 	    }
 
 };

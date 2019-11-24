@@ -1,5 +1,5 @@
 all:
-	g++ main.cpp -o risingCity
+	g++ -g main.cpp -o risingCity
 run:
 	.\risingCity 	
 clean:
