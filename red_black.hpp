@@ -11,7 +11,7 @@ struct Node {
 };
 
 typedef Node* Structptr;
-
+std::ofstream fout("output.txt");
 // class RedBlackTree implements the operations in Red Black Tree
 class RedBlackTree {
 private:
@@ -314,16 +314,17 @@ public:
         return this->root;
     }
 
-    void printInorder(Structptr node,int val1,int val2){
+   void printInorder(Structptr node,int val1,int val2,std::string& temp){
            
             if(node == tnil){
                 return;
             }
-            printInorder(node->left, val1,val2);
+            
+            printInorder(node->left, val1,val2, temp);
             if(val1 <= node->building_num<=val2){
-                 std::cout<<"("<<node->building_num<<","<<node->executionTime<<","<<node->totalTime<<")";
+                temp = temp + "(" + std::to_string(node->building_num) + "," + std::to_string(node->executionTime) + "," + std::to_string(node->totalTime) + "),";
             }
-            printInorder(node->right,val1,val2);
+            printInorder(node->right,val1,val2, temp);
             return;
 	    }
 

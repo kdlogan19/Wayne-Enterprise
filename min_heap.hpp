@@ -74,9 +74,9 @@ class MinHeap{
 		}
 		
 
-		int size(){
-			int x = work_days.size();
-			return x;
+		int size()
+		{
+			return work_days.size();
 		}
 
 		//inserting the new node referenced to redblack tree
@@ -99,20 +99,12 @@ class MinHeap{
 		Structptr removeMin(){
 			if(size() > 0){
 				Structptr min = work_days[0];
-				//std::cout<<"print inside remove min: ";
 				work_days[0] = work_days[size()-1];
 				work_days.pop_back();
-				//std::cout<<"print inside remove min: ";
 				heapify_down();
 				return min;
 			}
 			return nullptr;
-		}
-
-		void printMinHeap(){
-			for (int i = 0; i< size(); ++i){
-				 std::cout<<"("<<work_days.at(i)->building_num<<","<<work_days.at(i)->executionTime<<","<<work_days.at(i)->totalTime<<")";
-			}
 		}
 };
 

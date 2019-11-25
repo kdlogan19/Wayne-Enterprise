@@ -17,8 +17,13 @@ class MainHelper{
              return cb;
         }
 
-        void printOutput(Structptr bnum){
-            std::cout<<"\n("<<bnum->building_num<<","<<bnum->executionTime<<","<<bnum->totalTime<<")";
+        void printOutput(Structptr bnum, std::string& temp){
+            temp += "(" + std::to_string(bnum->building_num) + "," + std::to_string(bnum->executionTime) + "," + std::to_string(bnum->totalTime) + ")";
+        }
+
+        //print function - when construction of building is completed
+        void printFinish(Structptr bunm,int day,std::string& temp){
+            temp += "(" + std::to_string(bunm->building_num) + "," + std::to_string(day) + ")" ;
         }
 
 };
